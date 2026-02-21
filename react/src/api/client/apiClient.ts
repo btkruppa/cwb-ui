@@ -3,6 +3,7 @@ import axios, { type AxiosResponse } from "axios";
 // import { fetchAuthSession } from "aws-amplify/auth";
 import { getStageConfig } from "../../config/deploymentStage";
 import { Activity } from "../models/Activity";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 
 const axiosInstance = axios.create({
@@ -11,15 +12,15 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // const { tokens } = await fetchAuthSession();
-    // config.headers.Authorization = tokens?.idToken?.toString();
+    const { tokens } = await fetchAuthSession();
+    config.headers.Authorization = tokens?.idToken?.toString();
     return config;
   },
   null,
   { synchronous: false },
 );
 
-async function dataResponse<T>(res: AxiosResponse<T>) {
+function dataResponse<T>(res: AxiosResponse<T>) {
   return res.data;
 }
 
