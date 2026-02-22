@@ -1,3 +1,10 @@
+@import "@aws-amplify/ui-react/styles.css";
+
+$cwb-dark-blue: #212d74;
+$cwb-light-blue: #b9c6e5;
+$cwb-orange: #fcaf58;
+$cwb-green: #63cc8d;
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -17,11 +24,31 @@
   --color-border: #d9e5e3;
   --color-primary: #0d9488;
   --color-primary-hover: #0f766e;
-  --color-active: #fcaf58;
+  --color-active: #{$cwb-orange};
 
   color: var(--color-text);
   background-color: var(--color-bg);
+
+  --amplify-colors-primary-80: #{$cwb-dark-blue};
+  --amplify-colors-primary-10: #{lighten($cwb-dark-blue, 60)};
+  --amplify-colors-primary-20: #{lighten($cwb-dark-blue, 57)};
 }
+
+// Amplify
+.amplify-button--primary {
+  // background: linear-gradient(
+  //   to right,
+  //   var(--amplify-colors-green-80),
+  //   var(--amplify-colors-orange-40)
+  // );
+  background-color: $cwb-orange;
+  color: lighten(black, 10);
+
+  &:hover {
+    background-color: darken($cwb-orange, 8);
+  }
+}
+// end amplify
 
 a {
   font-weight: 500;

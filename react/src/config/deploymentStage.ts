@@ -2,7 +2,7 @@ export type DeploymentStage = "local" | "beta" | "prod";
 
 export interface StageConfiguration {
   amplify: {
-    aws_cognito_region: "us-west-2"; // (required) - Region where Amazon Cognito project was created
+    aws_cognito_region: "us-east-1"; // (required) - Region where Amazon Cognito project was created
     aws_user_pools_id: string; // (optional) -  Amazon Cognito User Pool ID
     aws_user_pools_web_client_id: string; // (optional) - Amazon Cognito App Client ID (App client secret needs to be disabled)
     aws_mandatory_sign_in?: "enable";
@@ -13,27 +13,27 @@ export interface StageConfiguration {
 const STAGE_CONFIGURATIONS: Record<DeploymentStage, StageConfiguration> = {
   local: {
     amplify: {
-      aws_cognito_region: "us-west-2",
-      aws_user_pools_id: "us-west-2_EKca11Ljm",
-      aws_user_pools_web_client_id: "2h1c724e15mgqljb9furintcp7",
+      aws_cognito_region: "us-east-1",
+      aws_user_pools_id: "us-east-1_QaChtvrcc",
+      aws_user_pools_web_client_id: "npqahvu3n0hh6hveadc5iqprr",
       aws_mandatory_sign_in: "enable",
     },
-    apiEndpoint: 'todo'
+    apiEndpoint: 'https://d2jq164330.execute-api.us-east-1.amazonaws.com/prod'
   },
   beta: {
     amplify: {
-      aws_cognito_region: "us-west-2",
-      aws_user_pools_id: "us-west-2_EKca11Ljm",
-      aws_user_pools_web_client_id: "2h1c724e15mgqljb9furintcp7",
+      aws_cognito_region: "us-east-1",
+      aws_user_pools_id: "us-east-1_QaChtvrcc",
+      aws_user_pools_web_client_id: "npqahvu3n0hh6hveadc5iqprr",
       aws_mandatory_sign_in: "enable",
     },
-    apiEndpoint: 'todo'
+    apiEndpoint: 'https://d2jq164330.execute-api.us-east-1.amazonaws.com/prod'
   },
   prod: {
     amplify: {
-      aws_cognito_region: "us-west-2",
-      aws_user_pools_id: "us-west-2_jCyva2o4a",
-      aws_user_pools_web_client_id: "iaeaeqtkfff8npfqtj61i6irq",
+      aws_cognito_region: "us-east-1",
+      aws_user_pools_id: "",
+      aws_user_pools_web_client_id: "",
       aws_mandatory_sign_in: "enable",
     },
     apiEndpoint: 'todo'
