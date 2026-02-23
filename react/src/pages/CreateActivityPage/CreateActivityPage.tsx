@@ -58,8 +58,8 @@ export function CreateActivityPage() {
         <FormField
           label="Start date"
           type="date"
-          value={activity.startDate.getTime()}
-          onChange={e => updateActivity({ startDate: new Date(e.target.value)})}
+          value={activity.startDate}
+          onChange={e => updateActivity({ startDate: e.target.value })}
           // error={touched.startDate ? errors.startDate : undefined}
         />
 

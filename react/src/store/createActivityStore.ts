@@ -31,7 +31,7 @@ function getInitialActivity(): Activity {
     owner: '',
     uid: '',
     title: '',
-    startDate: new Date(),
+    startDate: new Date().toISOString().split('T')[0],
     markingType: 'checkbox',
     cadence: getDefaultCadence('Weekly')
   }

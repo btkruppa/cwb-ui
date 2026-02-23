@@ -7,7 +7,7 @@ export const ActivitySchema = z.object({
   uid: z.uuid(),
   owner: z.string(),
   title: z.string().max(25),
-  startDate: z.coerce.date(),
+  startDate: z.iso.date(),
   markingType: MarkingTypeSchema,
   cadence: CadenceSchema,
 });
