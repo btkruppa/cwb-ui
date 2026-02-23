@@ -1,57 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import type { DailyRepeatOption, MarkingType } from '../../api/model/Activity'
-import { CreateActivitySchema } from '../../api/model/Activity'
-import type { WeekDay } from '../../api/model/Time'
+import type { MarkingType } from '../../api/model/Activity'
 import { useCreateActivity } from '../../api/client/apiHooks'
 import { FormField } from '../../components/FormField/FormField'
-import { useActivityFormStore, validateActivityForm } from '../../store/createActivity'
+import { WeeklyCadenceFields } from './Cadence/WeeklyCadenceFields'
+import { MonthlyCadenceFields } from './Cadence/MonthlyCadenceFields'
 import './CreateActivityPage.scss'
-
-const WEEK_DAYS: WeekDay[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-const DAY_ABBR: Record<WeekDay, string> = {
-  Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu',
-  Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun',
-}
-
-function nextDayState(state: DailyRepeatOption): DailyRepeatOption {
-  if (state === 'Skip') return 'Required'
-  if (state === 'Required') return 'Optional'
-  return 'Skip'
-}
+import { useCreateActivityStore } from '../../store/createActivityStore'
 
 export function CreateActivityPage() {
   const navigate = useNavigate()
   const { mutate: createActivity, isPending } = useCreateActivity()
 
-  const store = useActivityFormStore()
-  const { touched, setTitle, setStartDate, setEndDate, setMarkingType, setCadence, touchAll, reset } = store
+  const { activity, updateActivity } = useCreateActivityStore();
+  // useEffect(() => { reset() }, [reset])
 
-  useEffect(() => { reset() }, [reset])
-
-  const errors = validateActivityForm(store)
+  // const errors = validateActivityForm(store)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    touchAll()
-    if (Object.keys(validateActivityForm(useActivityFormStore.getState())).length > 0) return
+    // touchAll()
+    // if (Object.keys(validateActivityForm(useActivityFormStore.getState())).length > 0) return
 
-    const parsed = CreateActivitySchema.safeParse({
-      title: store.title,
-      startDate: new Date(store.startDate),
-      endDate: store.endDate ? new Date(store.endDate) : undefined,
-      markingType: store.markingType,
-      cadence: store.cadence,
-    })
-    if (!parsed.success) {
-      setSubmitError(parsed.error.issues[0].message)
-      return
-    }
+    // const parsed = CreateActivitySchema.safeParse({
+    //   title: activity,
+    //   startDate: new Date(store.startDate),
+    //   endDate: store.endDate ? new Date(store.endDate) : undefined,
+    //   markingType: store.markingType,
+    //   cadence: store.cadence,
+    // })
+    // if (!parsed.success) {
+    //   setSubmitError(parsed.error.issues[0].message)
+    //   return
+    // }
 
     setSubmitError(null)
-    createActivity(parsed.data, {
+    createActivity(activity, {
       onSuccess: () => { void navigate(-1) },
     })
   }
@@ -63,28 +48,28 @@ export function CreateActivityPage() {
         <FormField
           label="Title"
           type="text"
-          value={store.title}
-          onChange={e => setTitle(e.target.value)}
+          value={activity.title}
+          onChange={e => updateActivity({title: e.target.value})}
           placeholder="e.g. Morning run"
-          error={touched.title ? errors.title : undefined}
+          // error={touched.title ? errors.title : undefined}
         />
 
         <FormField
           label="Start date"
           type="date"
-          value={store.startDate}
-          onChange={e => setStartDate(e.target.value)}
-          error={touched.startDate ? errors.startDate : undefined}
+          value={activity.startDate.getTime()}
+          onChange={e => updateActivity({ startDate: new Date(e.target.value)})}
+          // error={touched.startDate ? errors.startDate : undefined}
         />
 
-        <FormField
+        {/* <FormField
           label="End date"
           hint="(optional)"
           type="date"
           value={store.endDate}
           onChange={e => setEndDate(e.target.value)}
-          error={touched.endDate ? errors.endDate : undefined}
-        />
+          // error={touched.endDate ? errors.endDate : undefined}
+        /> */}
 
         <div className="create-activity__field">
           <span className="create-activity__field-label">Marking type</span>
@@ -93,8 +78,8 @@ export function CreateActivityPage() {
               <button
                 key={type}
                 type="button"
-                className={`create-activity__segment-btn${store.markingType === type ? ' create-activity__segment-btn--active' : ''}`}
-                onClick={() => setMarkingType(type)}
+                className={`create-activity__segment-btn${activity.markingType === type ? ' create-activity__segment-btn--active' : ''}`}
+                onClick={() => updateActivity({markingType: type})}
               >
                 {type === 'checkbox' ? 'Checkbox' : 'Number'}
               </button>
@@ -109,18 +94,24 @@ export function CreateActivityPage() {
               <button
                 key={type}
                 type="button"
-                className={`create-activity__segment-btn${store.cadence.type === type ? ' create-activity__segment-btn--active' : ''}`}
+                className={`create-activity__segment-btn${activity.cadence.type === type ? ' create-activity__segment-btn--active' : ''}`}
                 onClick={() => {
                   if (type === 'Weekly') {
-                    setCadence({
-                      type: 'Weekly',
-                      daysOfWeek: {
-                        Monday: 'Skip', Tuesday: 'Skip', Wednesday: 'Skip', Thursday: 'Skip',
-                        Friday: 'Skip', Saturday: 'Skip', Sunday: 'Skip',
-                      },
+                    updateActivity({
+                      cadence: {
+                        type: 'Weekly',
+                        daysOfWeek: {
+                          Monday: 'Skip', Tuesday: 'Skip', Wednesday: 'Skip', Thursday: 'Skip',
+                          Friday: 'Skip', Saturday: 'Skip', Sunday: 'Skip',
+                        },
+                      }
                     })
                   } else {
-                    setCadence({ type: 'Monthly', frequency: 1, dayOfMonth: 1, carryOverUntilComplete: false })
+                    updateActivity({
+                      cadence: { 
+                        type: 'Monthly', frequency: 1, dayOfMonth: 1, carryOverUntilComplete: false 
+                      }
+                    })
                   }
                 }}
               >
@@ -130,83 +121,10 @@ export function CreateActivityPage() {
           </div>
         </div>
 
-        {store.cadence.type === 'Weekly' && (
-          <div className="create-activity__field">
-            <span className="create-activity__field-label">Days</span>
-            <div className="create-activity__day-grid">
-              {WEEK_DAYS.map(day => {
-                const dayState = store.cadence.type === 'Weekly' ? store.cadence.daysOfWeek[day] : 'Skip'
-                return (
-                  <button
-                    key={day}
-                    type="button"
-                    className={`create-activity__day-chip create-activity__day-chip--${dayState}`}
-                    onClick={() => {
-                      if (store.cadence.type === 'Weekly') {
-                        setCadence({
-                          ...store.cadence,
-                          daysOfWeek: { ...store.cadence.daysOfWeek, [day]: nextDayState(dayState) },
-                        })
-                      }
-                    }}
-                  >
-                    <span className="create-activity__day-name">{DAY_ABBR[day]}</span>
-                    {dayState !== 'Skip' && (
-                      <span className="create-activity__day-state">{dayState}</span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-            {touched.cadence && errors.cadence && (
-              <span className="create-activity__error">{errors.cadence}</span>
-            )}
-          </div>
-        )}
-
-        {store.cadence.type === 'Monthly' && (
-          <>
-            <FormField
-              label="Every N months"
-              type="number"
-              inputWidth="compact"
-              min={1}
-              value={store.cadence.frequency}
-              onChange={e => {
-                if (store.cadence.type === 'Monthly') {
-                  setCadence({ ...store.cadence, frequency: Number(e.target.value) })
-                }
-              }}
-            />
-
-            <FormField
-              label="Day of month"
-              type="number"
-              inputWidth="compact"
-              min={1}
-              max={31}
-              value={store.cadence.dayOfMonth}
-              onChange={e => {
-                if (store.cadence.type === 'Monthly') {
-                  setCadence({ ...store.cadence, dayOfMonth: Number(e.target.value) })
-                }
-              }}
-            />
-
-            <div className="create-activity__field create-activity__field--row">
-              <span className="create-activity__field-label">Carry over until complete</span>
-              <input
-                type="checkbox"
-                checked={store.cadence.carryOverUntilComplete}
-                onChange={e => {
-                  if (store.cadence.type === 'Monthly') {
-                    setCadence({ ...store.cadence, carryOverUntilComplete: e.target.checked })
-                  }
-                }}
-              />
-            </div>
-          </>
-        )}
+        <WeeklyCadenceFields 
+          // error={touched.cadence ? errors.cadence : undefined}
+        />
+        <MonthlyCadenceFields />
 
         {submitError && <span className="create-activity__error">{submitError}</span>}
 
