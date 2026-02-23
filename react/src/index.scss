@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import "@aws-amplify/ui-react/styles.css";
 
 $cwb-dark-blue: #212d74;
@@ -30,8 +31,8 @@ $cwb-green: #63cc8d;
   background-color: var(--color-bg);
 
   --amplify-colors-primary-80: #{$cwb-dark-blue};
-  --amplify-colors-primary-10: #{lighten($cwb-dark-blue, 60)};
-  --amplify-colors-primary-20: #{lighten($cwb-dark-blue, 57)};
+  --amplify-colors-primary-10: #{color.adjust($cwb-dark-blue, $lightness: 60%)};
+  --amplify-colors-primary-20: #{color.adjust($cwb-dark-blue, $lightness: 57%)};
 }
 
 // Amplify
@@ -42,10 +43,10 @@ $cwb-green: #63cc8d;
   //   var(--amplify-colors-orange-40)
   // );
   background-color: $cwb-orange;
-  color: lighten(black, 10);
+  color: color.adjust(black, $lightness: 10%);
 
   &:hover {
-    background-color: darken($cwb-orange, 8);
+    background-color: color.adjust($cwb-orange, $lightness: -8%);
   }
 }
 // end amplify
