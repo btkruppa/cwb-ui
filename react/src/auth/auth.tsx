@@ -1,5 +1,5 @@
 // import { Auth } from "aws-amplify";
-import { type AuthUser, fetchAuthSession } from "aws-amplify/auth";
+import { fetchAuthSession } from "aws-amplify/auth";
 import {
   getDeploymentStage,
   getStageConfig,
@@ -7,8 +7,6 @@ import {
 import { Amplify, type ResourcesConfig } from "aws-amplify";
 import { CookieStorage, Hub } from "aws-amplify/utils";
 import { cognitoUserPoolsTokenProvider } from "aws-amplify/auth/cognito";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useEffect, useState } from "react";
 
 function getAmplifyConfiguration(): ResourcesConfig {
   const stageConfig = getStageConfig();
@@ -87,55 +85,6 @@ export async function refreshIdToken() {
       { once: true },
     );
   }
-}
-
-export function useCognitoDetails() {
-  const authDetials = useAuthenticator((context) => [context.user]);
-  const user = authDetials.user as AuthUser | undefined;
-
-  const [subscription, setSubscription] = useState({
-    isSubscribed: false,
-    isLoading: true,
-  });
-  const [email, setEmail] = useState<string>("");
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSubscription({
-      isLoading: true,
-      isSubscribed: false,
-    });
-    async function getUserGroups() {
-      const { tokens } = await fetchAuthSession();
-      const groups = tokens?.accessToken.payload["cognito:groups"] as
-        | string[]
-        | undefined;
-      const email = tokens?.idToken?.payload.email as string | undefined;
-      const isSubscribed =
-        groups?.some((group) => group === "subscribers") ?? false;
-      setSubscription({
-        isLoading: false,
-        isSubscribed,
-      });
-      setEmail(email ?? "");
-    }
-    void getUserGroups();
-    const stopListen = Hub.listen("auth", (data) => {
-      const { payload } = data;
-
-      if (payload.event === "tokenRefresh") {
-        void getUserGroups();
-      }
-    });
-    return stopListen;
-  }, [user]);
-
-  return {
-    user,
-    isSubscribed: subscription.isSubscribed,
-    isLoading: subscription.isLoading,
-    email,
-  };
 }
 
 /**

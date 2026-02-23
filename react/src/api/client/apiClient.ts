@@ -1,8 +1,7 @@
 
 import axios, { type AxiosResponse } from "axios";
-// import { fetchAuthSession } from "aws-amplify/auth";
 import { getStageConfig } from "../../config/deploymentStage";
-import type { Activity } from "../models/Activity";
+import type { Activity } from "../model/Activity";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 
@@ -30,3 +29,5 @@ export const apiClient = {
       .then(dataResponse)
   }
 }
+
+
