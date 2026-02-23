@@ -7,7 +7,7 @@ import { WeeklyCadenceFields } from './Cadence/WeeklyCadenceFields'
 import { MonthlyCadenceFields } from './Cadence/MonthlyCadenceFields'
 import './CreateActivityPage.scss'
 import { getDefaultCadence, useCreateActivityStore } from '../../store/createActivityStore'
-import { CreateActivitySchema, type Activity } from '../../api/model/Activity'
+import { CreateActivitySchema } from '../../api/model/Activity'
 import z from 'zod'
 
 export function CreateActivityPage() {
@@ -43,7 +43,6 @@ export function CreateActivityPage() {
           // error={touched.title ? errors.title : undefined}
         />
 
-        {/* todo i broke this field */}
         <FormField
           label="Start date"
           type="date"
@@ -76,7 +75,6 @@ export function CreateActivityPage() {
         <button type="submit" className="create-activity__submit" disabled={isPending}>
           {isPending ? 'Saving...' : 'Create Activity'}
         </button>
-
       </form>
     </div>
   )

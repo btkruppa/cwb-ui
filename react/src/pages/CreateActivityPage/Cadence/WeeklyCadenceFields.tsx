@@ -1,13 +1,6 @@
 import type { DailyRepeatOption, WeeklyCadence } from '../../../api/model/Cadence'
-import type { WeekDay } from '../../../api/model/Time'
+import { DAY_ABBR, WEEK_DAYS } from '../../../api/model/Time'
 import { useCreateActivityStore } from '../../../store/createActivityStore'
-
-const WEEK_DAYS: WeekDay[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-const DAY_ABBR: Record<WeekDay, string> = {
-  Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu',
-  Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun',
-}
 
 function nextDayState(state: DailyRepeatOption): DailyRepeatOption {
   if (state === 'Skip') return 'Required'

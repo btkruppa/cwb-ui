@@ -25,7 +25,7 @@ function dataResponse<T>(res: AxiosResponse<T>) {
 
 export const apiClient = {
   async getActivities(user: string) {
-    return axiosInstance.get<Activity>(`/activities?user=${user}`)
+    return axiosInstance.get<Activity[]>(`/activities/${user}`)
       .then(dataResponse)
   },
 

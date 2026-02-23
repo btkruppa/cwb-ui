@@ -5,7 +5,8 @@ import type { CreateActivity } from "../model/Activity";
 export function useGetActivities(user: string) {
   return useQuery({
     queryKey: ['getActivities', 'user', user],
-    queryFn: () => apiClient.getActivities(user)
+    queryFn: () => apiClient.getActivities(user),
+    enabled: Boolean(user)
   })
 }
 
