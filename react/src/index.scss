@@ -19,12 +19,12 @@ $cwb-green: #63cc8d;
   -moz-osx-font-smoothing: grayscale;
 
   --color-text: #1a2e2a;
-  --color-text-muted: #6b8f88;
+  --color-text-muted: #{color.mix($cwb-dark-blue, $cwb-light-blue, 55%)};
   --color-bg: #fafbfc;
   --color-surface: #f0f5f4;
   --color-border: #d9e5e3;
-  --color-primary: #0d9488;
-  --color-primary-hover: #0f766e;
+  --color-primary: #{$cwb-dark-blue};
+  --color-primary-hover: #{color.adjust($cwb-dark-blue, $lightness: 10%)};
   --color-active: #{$cwb-orange};
   --color-error: #dc2626;
 

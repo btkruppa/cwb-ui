@@ -17,3 +17,11 @@ export function useCreateActivity() {
     onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ['getActivities'] }) },
   })
 }
+
+export function useDeleteActivity() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ owner, uid }: { owner: string; uid: string }) => apiClient.deleteActivity(owner, uid),
+    onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ['getActivities'] }) },
+  })
+}

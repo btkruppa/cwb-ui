@@ -1,6 +1,6 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Pencil } from "lucide-react";
-import { useGetActivities } from "../../api/client/apiHooks";
+import { Pencil, Trash2 } from "lucide-react";
+import { useDeleteActivity, useGetActivities } from "../../api/client/apiHooks";
 import type { Activity } from "../../api/model/Activity";
 import { DAY_ABBR, WEEK_DAYS } from "../../api/model/Time";
 import "./ManagePage.scss";
@@ -19,6 +19,7 @@ function cadenceSummary(activity: Activity): string {
 export function ManagePage() {
   const { user } = useAuthenticator();
   const { data: activities, isLoading } = useGetActivities(user?.username);
+  const { mutate: deleteActivity } = useDeleteActivity();
 
   if (isLoading) {
     return <div className="manage"><p>Loading...</p></div>;
@@ -36,9 +37,19 @@ export function ManagePage() {
                 <span className="manage__card-title">{activity.title}</span>
                 <span className="manage__card-cadence">{cadenceSummary(activity)}</span>
               </div>
-              <button className="manage__card-edit" type="button" aria-label="Edit">
-                <Pencil size={18} />
-              </button>
+              <div className="manage__card-actions">
+                <button className="manage__card-edit" type="button" aria-label="Edit">
+                  <Pencil size={18} />
+                </button>
+                <button
+                  className="manage__card-delete"
+                  type="button"
+                  aria-label="Delete"
+                  onClick={() => deleteActivity({ owner: activity.owner, uid: activity.uid })}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             </li>
           ))}
         </ul>

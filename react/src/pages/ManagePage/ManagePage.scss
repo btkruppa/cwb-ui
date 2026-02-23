@@ -34,16 +34,30 @@
 
   &__card-cadence {
     font-size: 0.8rem;
-    color: var(--color-muted, #888);
+    color: var(--color-text-muted);
   }
 
-  &__card-edit {
+  &__card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__card-edit,
+  &__card-delete {
     border: none;
     background: none;
-    color: var(--color-muted, #888);
     cursor: pointer;
     padding: 0.25rem;
     display: flex;
     align-items: center;
+  }
+
+  &__card-edit {
+    color: var(--color-text-muted);
+  }
+
+  &__card-delete {
+    color: var(--color-error);
   }
 }

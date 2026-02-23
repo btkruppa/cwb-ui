@@ -33,6 +33,10 @@ export const apiClient = {
     return axiosInstance.post<Activity>('/activities', data)
       .then(dataResponse)
   },
+
+  async deleteActivity(owner: string, uid: string) {
+    return axiosInstance.delete(`/activities/${owner}/${uid}`)
+  },
 }
 
 

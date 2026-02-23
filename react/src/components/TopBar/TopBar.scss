@@ -43,7 +43,7 @@
     cursor: pointer;
     padding: 0;
 
-    color: #3a5a54;
+    color: var(--color-text);
     transition: color 0.15s ease;
 
     -webkit-user-select: none;
