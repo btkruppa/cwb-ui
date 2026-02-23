@@ -7,35 +7,24 @@ import { WeeklyCadenceFields } from './Cadence/WeeklyCadenceFields'
 import { MonthlyCadenceFields } from './Cadence/MonthlyCadenceFields'
 import './CreateActivityPage.scss'
 import { getDefaultCadence, useCreateActivityStore } from '../../store/createActivityStore'
+import { CreateActivitySchema, type Activity } from '../../api/model/Activity'
+import z from 'zod'
 
 export function CreateActivityPage() {
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
   const navigate = useNavigate()
   const { mutate: createActivity, isPending } = useCreateActivity()
-
   const { activity, updateActivity } = useCreateActivityStore();
-  // useEffect(() => { reset() }, [reset])
-
-  // const errors = validateActivityForm(store)
-  const [submitError, setSubmitError] = useState<string | null>(null)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // touchAll()
-    // if (Object.keys(validateActivityForm(useActivityFormStore.getState())).length > 0) return
 
-    // const parsed = CreateActivitySchema.safeParse({
-    //   title: activity,
-    //   startDate: new Date(store.startDate),
-    //   endDate: store.endDate ? new Date(store.endDate) : undefined,
-    //   markingType: store.markingType,
-    //   cadence: store.cadence,
-    // })
-    // if (!parsed.success) {
-    //   setSubmitError(parsed.error.issues[0].message)
-    //   return
-    // }
-
-    setSubmitError(null)
+    const validationError = CreateActivitySchema.safeParse(activity).error
+    if (validationError) {
+      setSubmitError(z.prettifyError(validationError))
+      return;
+    }
     createActivity(activity, {
       onSuccess: () => { void navigate(-1) },
     })

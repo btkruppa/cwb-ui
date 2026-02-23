@@ -90,6 +90,7 @@
   &__error {
     font-size: 0.75rem;
     color: var(--color-error);
+    white-space: pre;
   }
 
   &__submit {
