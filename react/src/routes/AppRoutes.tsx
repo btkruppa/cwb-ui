@@ -5,6 +5,8 @@ import { HomePage } from "../pages/HomePage/HomePage";
 import { ManagePage } from "../pages/ManagePage/ManagePage";
 import { SignInPage } from "../pages/SignInPage/SignInPage";
 import type { JSX } from "react";
+import { CreateActivityPage } from "../pages/CreateActivityPage/CreateActivityPage";
+import { CreateActivityTopBar } from "../pages/CreateActivityPage/CreateActivityTopBar";
 import { ManageTopBar } from "../pages/ManagePage/ManageTopBar";
 import { BottomBar } from "../components/BottomBar/BottomBar";
 
@@ -13,7 +15,7 @@ interface AppRoute {
   path: string,
   element: JSX.Element,
   topBar?: JSX.Element,
-  bottomBar?: JSX.Element
+  bottomBar?: JSX.Element | null
 }
 
 const appRoutes: AppRoute[] = [
@@ -29,6 +31,12 @@ const appRoutes: AppRoute[] = [
     path: "/manage",
     element: <ManagePage />,
     topBar: <ManageTopBar />
+  },
+  {
+    path: "/manage/create-activity",
+    element: <CreateActivityPage />,
+    topBar: <CreateActivityTopBar />,
+    bottomBar: null
   },
   {
     path: "/dashboard",
@@ -62,7 +70,7 @@ export function AppRoutes() {
           <Route
             key={r.path}
             path={r.path}
-            element={r.bottomBar ?? <BottomBar />}
+            element={r.bottomBar === undefined ? <BottomBar /> : r.bottomBar}
           />
         ))
       }
