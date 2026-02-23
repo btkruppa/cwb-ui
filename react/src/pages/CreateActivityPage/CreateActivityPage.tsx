@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import type { MarkingType } from '../../api/model/Activity'
+import { SegmentField } from '../../components/SegmentField/SegmentField'
 import { useCreateActivity } from '../../api/client/apiHooks'
 import { FormField } from '../../components/FormField/FormField'
 import { WeeklyCadenceFields } from './Cadence/WeeklyCadenceFields'
 import { MonthlyCadenceFields } from './Cadence/MonthlyCadenceFields'
 import './CreateActivityPage.scss'
-import { useCreateActivityStore } from '../../store/createActivityStore'
+import { getDefaultCadence, useCreateActivityStore } from '../../store/createActivityStore'
 
 export function CreateActivityPage() {
   const navigate = useNavigate()
@@ -54,6 +54,7 @@ export function CreateActivityPage() {
           // error={touched.title ? errors.title : undefined}
         />
 
+        {/* todo i broke this field */}
         <FormField
           label="Start date"
           type="date"
@@ -62,64 +63,19 @@ export function CreateActivityPage() {
           // error={touched.startDate ? errors.startDate : undefined}
         />
 
-        {/* <FormField
-          label="End date"
-          hint="(optional)"
-          type="date"
-          value={store.endDate}
-          onChange={e => setEndDate(e.target.value)}
-          // error={touched.endDate ? errors.endDate : undefined}
-        /> */}
+        <SegmentField
+          label="Marking type"
+          options={['checkbox', 'number'] as const}
+          value={activity.markingType}
+          onSelect={type => updateActivity({ markingType: type })}
+        />
 
-        <div className="create-activity__field">
-          <span className="create-activity__field-label">Marking type</span>
-          <div className="create-activity__segment">
-            {(['checkbox', 'number'] as MarkingType[]).map(type => (
-              <button
-                key={type}
-                type="button"
-                className={`create-activity__segment-btn${activity.markingType === type ? ' create-activity__segment-btn--active' : ''}`}
-                onClick={() => updateActivity({markingType: type})}
-              >
-                {type === 'checkbox' ? 'Checkbox' : 'Number'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="create-activity__field">
-          <span className="create-activity__field-label">Cadence</span>
-          <div className="create-activity__segment">
-            {(['Weekly', 'Monthly'] as const).map(type => (
-              <button
-                key={type}
-                type="button"
-                className={`create-activity__segment-btn${activity.cadence.type === type ? ' create-activity__segment-btn--active' : ''}`}
-                onClick={() => {
-                  if (type === 'Weekly') {
-                    updateActivity({
-                      cadence: {
-                        type: 'Weekly',
-                        daysOfWeek: {
-                          Monday: 'Skip', Tuesday: 'Skip', Wednesday: 'Skip', Thursday: 'Skip',
-                          Friday: 'Skip', Saturday: 'Skip', Sunday: 'Skip',
-                        },
-                      }
-                    })
-                  } else {
-                    updateActivity({
-                      cadence: { 
-                        type: 'Monthly', frequency: 1, dayOfMonth: 1, carryOverUntilComplete: false 
-                      }
-                    })
-                  }
-                }}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-        </div>
+        <SegmentField
+          label="Cadence"
+          options={['Weekly', 'Monthly'] as const}
+          value={activity.cadence.type}
+          onSelect={type => updateActivity({cadence: getDefaultCadence(type)})}
+        />
 
         <WeeklyCadenceFields 
           // error={touched.cadence ? errors.cadence : undefined}

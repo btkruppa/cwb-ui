@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Activity } from "../api/model/Activity";
+import type { Activity, Cadence } from "../api/model/Activity";
 import { ActivitySchema } from "../api/model/Activity";
 import z from "zod";
 import type { $ZodErrorTree } from "zod/v4/core";
@@ -9,20 +9,6 @@ export interface ActivityFormStore {
   errors: $ZodErrorTree<Activity> | null
   updateActivity: (updates: Partial<Activity>) => void
 }
-
-function getInitialActivity(): Activity {
-  return {
-    owner: '',
-    uid: '',
-    title: '',
-    startDate: new Date(),
-    markingType: 'checkbox',
-    cadence: {
-      type: 'Weekly',
-      daysOfWeek: {Sunday: 'Skip', Monday: 'Skip', Tuesday: 'Skip', Wednesday: 'Skip', Thursday: 'Skip', Friday: 'Skip', Saturday: 'Skip'}
-    }
-  }
-} 
 
 export const useCreateActivityStore = create<ActivityFormStore>()((set) => ({
   activity: getInitialActivity(),
@@ -39,3 +25,25 @@ export const useCreateActivityStore = create<ActivityFormStore>()((set) => ({
     })
   }, 
 }))
+
+function getInitialActivity(): Activity {
+  return {
+    owner: '',
+    uid: '',
+    title: '',
+    startDate: new Date(),
+    markingType: 'checkbox',
+    cadence: getDefaultCadence('Weekly')
+  }
+} 
+
+export function getDefaultCadence(type: Activity["cadence"]['type']): Cadence {
+  if (type === 'Weekly') {
+    return {
+      type: 'Weekly',
+      daysOfWeek: {Sunday: 'Skip', Monday: 'Skip', Tuesday: 'Skip', Wednesday: 'Skip', Thursday: 'Skip', Friday: 'Skip', Saturday: 'Skip'}
+    }
+  }
+
+  return { type: 'Monthly', frequency: 1, dayOfMonth: 1, carryOverUntilComplete: false }  
+}
