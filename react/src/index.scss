@@ -26,6 +26,7 @@ $cwb-green: #63cc8d;
   --color-primary: #0d9488;
   --color-primary-hover: #0f766e;
   --color-active: #{$cwb-orange};
+  --color-error: #dc2626;
 
   color: var(--color-text);
   background-color: var(--color-bg);

@@ -1,11 +1,14 @@
 import { z } from 'zod';
 import { WeekDaySchema } from './Time';
 
-export const DailyRepeatOptionSchema = z.enum(['Required', 'Optional']);
+export const DailyRepeatOptionSchema = z.enum(['Required', 'Optional', 'Skip']);
 
 export const WeeklyCadenceSchema = z.object({
   type: z.literal('Weekly'),
   daysOfWeek: z.record(WeekDaySchema, DailyRepeatOptionSchema),
+}).superRefine((cadence, ctx) => {
+  const hasDay = Object.values(cadence.daysOfWeek).some(d => d !== 'Skip')
+  if (!hasDay) ctx.addIssue({ code: 'custom', message: 'Select at least one day' })
 });
 
 export const MonthlyCadenceSchema = z.object({
@@ -28,14 +31,20 @@ export const CadenceSchema = z.discriminatedUnion('type', [
   MonthlyCadenceSchema,
 ]);
 
+export const MarkingTypeSchema = z.enum(['checkbox', 'number']);
+
 export const ActivitySchema = z.object({
   uid: z.uuid(),
   owner: z.string(),
-  title: z.string(),
+  title: z.string().max(25),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
-  markingType: z.enum(['checkbox', 'number']),
+  markingType: MarkingTypeSchema,
   cadence: CadenceSchema,
+}).superRefine((data, ctx) => {
+  if (data.endDate && data.endDate < data.startDate) {
+    ctx.addIssue({ code: 'custom', message: 'Must be after start date', path: ['endDate'] })
+  }
 });
 
 export const CreateActivitySchema = ActivitySchema.omit({ uid: true, owner: true });
@@ -46,6 +55,7 @@ export const PatchActivitySchema = ActivitySchema
   .strict();
 
 export type DailyRepeatOption = z.infer<typeof DailyRepeatOptionSchema>;
+export type MarkingType = z.infer<typeof MarkingTypeSchema>;
 export type WeeklyCadence = z.infer<typeof WeeklyCadenceSchema>;
 export type MonthlyCadence = z.infer<typeof MonthlyCadenceSchema>;
 export type Cadence = z.infer<typeof CadenceSchema>;

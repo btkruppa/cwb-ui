@@ -1,7 +1,7 @@
 
 import axios, { type AxiosResponse } from "axios";
 import { getStageConfig } from "../../config/deploymentStage";
-import type { Activity } from "../model/Activity";
+import type { Activity, CreateActivity } from "../model/Activity";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 
@@ -27,7 +27,12 @@ export const apiClient = {
   async getActivities(user: string) {
     return axiosInstance.get<Activity>(`/activities?user=${user}`)
       .then(dataResponse)
-  }
+  },
+
+  async createActivity(data: CreateActivity) {
+    return axiosInstance.post<Activity>('/activities', data)
+      .then(dataResponse)
+  },
 }
 
 
